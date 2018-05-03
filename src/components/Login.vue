@@ -79,5 +79,19 @@ export default {
   position: relative;
   top: 25vh;
   box-shadow: 0px 0px 25px #8887bb;
+  transition: all 0.5s;
+}
+@media only screen and (max-width: 750px) {
+  .login-form {
+    margin: 0 auto;
+    max-width: 90%;
+    color: #fff;
+    background-color: #fff;
+    padding: 2em;
+    border-radius: 6px;
+    position: relative;
+    top: 10vh;
+    box-shadow: 0px 0px 0px #fff;
+  }
 }
 </style>
