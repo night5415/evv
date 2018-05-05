@@ -6,8 +6,12 @@ import BootstrapVue from 'bootstrap-vue/dist/bootstrap-vue.esm';
 import router from './router'
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
+import helpers from './js/helpers';
+import moment from 'vue-moment';
 
 Vue.use(BootstrapVue);
+Vue.use(helpers);
+Vue.use(moment);
 
 Vue.config.productionTip = false
 
@@ -19,4 +23,4 @@ new Vue({
     App
   },
   template: '<App/>'
-})
+});

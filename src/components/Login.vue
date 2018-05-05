@@ -27,7 +27,7 @@ export default {
     onSubmit: function(evnt, form) {
       var me = this,
         formData = new FormData(),
-        url = "https://test-lighthouse.abpathfinder.net/~api/login";
+        url = "https://stage-lighthouse.pathfinderhi.net/~api/login";
 
       formData.append("source", "pathfinder");
       formData.append("loginUserName", this.username);
@@ -44,24 +44,14 @@ export default {
           //bad JSON
           var obj = eval(`(${response})`);
           if (obj.success) {
-            localStorage.setItem("securityContext", JSON.stringify(obj));
+            me.$helpers._addLocalStorage("securityContext", obj); 
             me.$router.push({ path: `/schedule` });
-          } else {
-            Notification.requestPermission(function(permission) {
-              // If the user accepts, let's create a notification
-              if (permission === "granted") {
-                var notification = new Notification(obj.errors.reason);
-              }
-            });
+          } else { 
+              me.$helpers._sendNotification(obj.errors.reason); 
           }
         })
-        .catch(function(err) {
-          Notification.requestPermission(function(permission) {
-            // If the user accepts, let's create a notification
-            if (permission === "granted") {
-              var notification = new Notification(err);
-            }
-          });
+        .catch(function(err) { 
+           me.$helpers._sendNotification(err); 
         });
     }
   }
