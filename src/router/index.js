@@ -4,6 +4,7 @@ import About from '@/components/About'
 import Schedule from '@/components/Schedule'
 import Login from '@/components/Login'
 import Lock from '@/components/Lock'
+import Detail from '@/components/Detail'
 
 Vue.use(Router)
 
@@ -32,6 +33,11 @@ export default new Router({
       path: '/Lock',
       name: 'Lock',
       component: Lock
+    },
+    {
+      path: '/Detail',
+      name: 'Detail',
+      component: Detail
     }
   ]
 })

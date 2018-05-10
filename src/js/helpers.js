@@ -2,11 +2,11 @@
    install: (Vue) => {
      Vue.prototype.$helpers = {
        _getGeoCords: function () {
-         if (navigator.geolocation) {
-           return navigator.geolocation.getCurrentPosition(showPosition);
-         } else {
-           _sendNotification("Geolocation is not supported by this browser.");
-         }
+         return new Promise(function (resolve, reject) {
+           navigator.geolocation.getCurrentPosition(function (params) {
+             resolve(params);
+           });
+         });
        },
 
        _sendNotification: function (message) {

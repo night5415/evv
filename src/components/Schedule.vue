@@ -4,27 +4,23 @@
     <table class="table table-hover">
       <thead>
         <tr>
-          <th style="text-align:center">Actions</th>
-          <th>Appt. Time</th>
-          <th>Participant</th>
-          <th>Location</th>
+          <th style="text-align:center">Actions</th> 
+          <th>Event Type</th>
           <th>Start Time</th>
           <th>End Time</th>
           <th>Cancel</th>
         </tr>
       </thead>
       <tbody>
-          <tr v-for="a in assignedApplications">
+          <tr v-for="a in appointments">
               <td style="min-width:105px; text-align:center;">
                 <i title="Lock Appointment" class="far fa-2x fas fa-lock" v-on:click="showSignature"></i> 
                 <i title="Start Appointment" class="fas fa-2x fa-stopwatch" v-on:click="startAppointment"></i>
-              </td>
-              <td>{{a.time}}</td>
-              <td>{{a.participant}}</td>
-              <td>{{a.location}}</td>
-              <td>{{a.start}}</td>
-              <td>{{a.end}}</td>
-              <td><i title="Start Appointment" class="far fa-2x fa-times-circle"></i></td>
+              </td> 
+              <td class="row-click" v-on:click="showDetails(a)">{{a.EventType}}</td> 
+              <td class="row-click" v-on:click="showDetails(a)">{{a.EventStartDate | timeFormat }}</td>
+              <td class="row-click" v-on:click="showDetails(a)">{{a.EventEndDate | timeFormat}}</td>
+              <td><i title="Cancel Appointment" class="far fa-2x fa-times-circle"></i></td>
           </tr> 
       </tbody>  
     </table>  
@@ -37,55 +33,43 @@ export default {
     return {
       show: false,
       msg: null,
-      assignedApplications: [
-        {
-          id: 1,
-          time: "8:00 AM",
-          participant: "skip dog",
-          location: "Home",
-          start: null,
-          end: null
-        },
-        {
-          id: 2,
-          time: "10:00 AM",
-          participant: "shane jane",
-          location: "Office",
-          start: null,
-          end: null
-        },
-        {
-          id: 3,
-          time: "1:00 PM",
-          participant: "tina go",
-          location: "Home",
-          start: null,
-          end: null
-        },
-        {
-          id: 4,
-          time: "5:00 PM",
-          participant: "fred lite",
-          location: "School",
-          start: null,
-          end: null
-        },
-        {
-          id: 5,
-          time: "N/A",
-          participant: "bob joe",
-          location: "N/A",
-          start: null,
-          end: null
-        }
-      ]
+      appointments: []
     };
   },
   mounted: function() {
-    var me = this,
-      d = new Date();
+    let me = this,
+      d = me.$moment(),
+      url = new URL(
+        "https://stage-lighthouse.pathfinderhi.net/Pathfinder/~api/calendar/list" //~api/calendar/employeeEvents"
+      ),
+      securityToken = me.$helpers._getLocalStorage("securityContext"),
+      params = {
+        empIds: securityToken.data.SecurityContext.Person.Id,
+        _dc: me.$moment().valueOf(),
+        startDate: d.startOf("day").format(),
+        endDate: d.endOf("day").format(),
+        securityToken: securityToken.data.securityToken
+      };
 
-    this.msg = `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`;
+    //set header text
+    this.msg = d.format("MMMM Do YYYY");
+
+    //copy paste from stack overflow :)
+    let esc = encodeURIComponent;
+    let query = Object.keys(params)
+      .map(k => esc(k) + "=" + esc(params[k]))
+      .join("&");
+    //make call to scheduling endpoint
+    fetch(`${url}?${query}`)
+      .then(data => data.text())
+      .then(text => {
+        var value = JSON.parse(text);
+        value.data.forEach(v => me.appointments.push(v));
+        me.$helpers._addLocalStorage("schedule", value.data);
+      })
+      .catch(function(err) {
+        me.$helpers._sendNotification(err);
+      });
   },
   methods: {
     showSignature() {
@@ -93,22 +77,37 @@ export default {
     },
     startAppointment() {
       var me = this,
-        d = new Date(),
-        mess = `Starting Appointment at ${d.getHours()}:${d.getMinutes()}`;
+        d = me.$moment();
 
-      Notification.requestPermission(function(permission) {
-        // If the user accepts, let's create a notification
-        if (permission === "granted") {
-          var notification = new Notification(mess);
-        }
+      me.$helpers._sendNotification(
+        `Starting Appointment at ${d.format("h:mm:ss a")}`
+      );
+    },
+    showDetails(appt) {
+      //this passes the event ID in the URL
+      this.$router.push({
+        path: `/Detail`,
+        query: { id: appt.MasterEventId, status: appt.EventStatus }
       });
+    }
+  },
+  filters: {
+    timeFormat: function(date) {
+      if (date) {
+        var dateTime = new Date(date);
+        return `${dateTime.toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit"
+        })}`;
+      }
     }
   }
 };
 </script>
 
 <style scoped>
-th {
+th,
+td {
   text-align: center;
 }
 i {
@@ -123,7 +122,7 @@ i {
 .grid-body {
   margin: 0 auto;
   width: 75vw;
-  min-width: 600px;
+  max-width: 960px;
   padding: 2em;
   background-color: #fff;
   border-radius: 6px 6px 0px 0px;
@@ -141,6 +140,9 @@ i {
 .fade-enter,
 .fade-leave-to {
   opacity: 0;
+}
+.row-click {
+  cursor: pointer;
 }
 @media only screen and (max-width: 750px) {
   .grid-body {
