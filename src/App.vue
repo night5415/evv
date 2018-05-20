@@ -1,8 +1,8 @@
 <template>  
   <div id="app">  
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
-    <div class="content">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css">
+    <div class="content"> 
       <div class="background-accent"></div>  
       <transition name="fade">
         <router-view></router-view>
@@ -13,7 +13,13 @@
  <script>
 export default {
   mounted: function() {
-    console.log("mounted");
+    if ("serviceWorker" in navigator) {
+      try {
+        navigator.serviceWorker.register("sw.js");
+      } catch (e) {
+        console.log(e);
+      }
+    }
   },
   updated: function() {},
   created: function() {},
@@ -28,7 +34,7 @@ export default {
   },
   data() {
     return {
-      key: "test"
+      online: navigator.onLine
     };
   }
 };
