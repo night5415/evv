@@ -6,15 +6,30 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <link rel="manifest" href="<%= htmlWebpackPlugin.files.publicPath %>static/manifest.json">
   <title>Electronic Verification</title>
+  <style>
+    .online-badge {
+      position: fixed;
+      padding: 10px;
+      border-radius: 6px;
+      background-color: rgb(237, 100, 152);
+      transition: all 200ms;
+      bottom: 20px;
+      right: 20px;
+      color: #fff;
+      opacity: 1;
+    }
+
+    .offline {
+      opacity: 0;
+      bottom: 10px;
+    }
+  </style>
 </head>
 
 <body>
+  <span class="online-badge offline" id="my-div">Off-Line</span>
   <div id="app"></div>
   <!-- built files will be auto injected -->
-  <script>
-
-
-  </script>
 </body>
 
 </html>

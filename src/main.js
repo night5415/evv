@@ -24,3 +24,12 @@ new Vue({
   },
   template: '<App/>'
 });
+
+window.addEventListener('online', function () {
+  var element = document.getElementById('my-div');
+  element.classList.add("offline");
+});
+window.addEventListener('offline', function () {
+  var element = document.getElementById('my-div');
+  element.classList.remove("offline");
+});
