@@ -71,6 +71,9 @@ export default {
         obj.data.forEach(v => me.appointments.push(v));
         me.$helpers._addLocalStorage("schedule", obj.data);
       })
+      .then(function() {
+        me.$helpers._removeLoadingImg();
+      })
       .catch(function(err) {
         me.$helpers._sendNotification(err);
       });

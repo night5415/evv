@@ -23,3 +23,10 @@
   color: red;
   z-index: 2;
 }
+
+._loading {
+  position: fixed;
+  bottom: 2vh;
+  left: 5vw;
+  height: 25vh;
+}

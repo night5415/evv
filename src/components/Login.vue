@@ -10,7 +10,7 @@
       <input type="password" class="form-control" id="pwd" v-model="password" placeholder="Enter Password" name="pswd">
     </div>  
     <button type="submit" class="btn btn-primary">Submit</button>
-  </form> 
+  </form>  
   </div>
 </template> 
 <script>
@@ -31,7 +31,8 @@ export default {
           username: this.username,
           password: this.password
         };
-
+      //show loading gif
+      me.$helpers._addLoadingImg();
       fetch(myUrl, {
         method: "POST",
         mode: "cors",
@@ -47,7 +48,9 @@ export default {
         .then(function(obj) {
           if (obj.success) {
             me.$helpers._addLocalStorage("securityContext", obj);
-            me.$router.push({ path: `/schedule` });
+            setTimeout(function() {
+              me.$router.push({ path: `/schedule` });
+            }, 2000);
           } else {
             me.$helpers._sendNotification(obj.message);
           }
