@@ -5,29 +5,25 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <link rel="manifest" href="<%= htmlWebpackPlugin.files.publicPath %>static/manifest.json">
+  <link rel="stylesheet" href="<%= htmlWebpackPlugin.files.publicPath %>static/styles.css">
   <title>Electronic Verification</title>
-  <style>
-    .online-badge {
-      position: fixed;
-      padding: 10px;
-      border-radius: 6px;
-      background-color: rgb(237, 100, 152);
-      transition: all 200ms;
-      bottom: 20px;
-      right: 20px;
-      color: #fff;
-      opacity: 1;
-    }
 
-    .offline {
-      opacity: 0;
-      bottom: 10px;
-    }
-  </style>
+  <!-- Apple doesn't use the manifest yet.. this is required for app icon to work! -->
+  <link rel="apple-touch-icon" sizes="57x57" href="/static/images/icons/logo_57.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/static/images/icons/logo_152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/images/icons/logo_180.png">
+  <link rel="apple-touch-icon" sizes="167x167" href="/static/images/icons/logo_167.png">
+  <!-- Android Devices High Resolution -->
+  <link rel="icon" sizes="192x192" href="/static/images/icons/logo_hd.png">
+  <!-- Android Devices Normal Resolution -->
+  <link rel="icon" sizes="128x128" href="/static/images/icons/logo.png">
 </head>
 
 <body>
-  <span class="online-badge offline" id="my-div">Off-Line</span>
+  <i class="fa fa-wifi no-wifi hide" id="no-wifi">
+    <i class="fa fa-exclamation"></i>
+  </i>
+  <span class="notifi-badge hide" id="notifi"></span>
   <div id="app"></div>
   <!-- built files will be auto injected -->
 </body>

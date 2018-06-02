@@ -1,20 +1,39 @@
 {
-  "short_name": "suff",
-  "name": "Stuff",
+  "short_name": "EVV",
+  "name": "Electronic Verification",
   "icons": [{
-      "src": "/images/super_mario.png",
-      "type": "image/png",
-      "sizes": "192x192"
+      "src": "/static/images/icons/logo_57.png",
+      "sizes": "57x57",
+      "type": "image/png"
     },
     {
-      "src": "/images/icons-512.png",
-      "type": "image/png",
-      "sizes": "512x512"
+      "src": "/static/images/icons/logo_152.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/images/icons/logo_180.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/images/icons/logo_167.png",
+      "sizes": "167x167",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/images/icons/logo_hd.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/images/icons/logo.png",
+      "sizes": "128x128",
+      "type": "image/png"
     }
   ],
-  "start_url": "/maps/?source=pwa",
+  "start_url": "/index.html",
   "background_color": "#3367D6",
   "display": "standalone",
-  "scope": "/maps/",
   "theme_color": "#3367D6"
 }

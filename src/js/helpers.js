@@ -10,14 +10,14 @@
        },
 
        _sendNotification: function (message) {
-         if (Notification.permission === "granted") {
-           var notification = new Notification(message);
-         } else {
-           Notification.requestPermission(function (permission) {
-             // If the user accepts, let's create a notification
-             var notification = new Notification(message);
-           });
-         }
+         var element = document.getElementById('notifi');
+         element.classList.remove("hide");
+         element.innerText = message;
+         //clear it back out
+         setTimeout(function () {
+           element.classList.add("hide");
+           element.innerText = '';
+         }, 5000);
        },
 
        _addLocalStorage: function (key, obj) {
@@ -26,13 +26,7 @@
 
        _getLocalStorage: function (key) {
          return JSON.parse(localStorage.getItem(key));
-       },
-
-       //    _navigate: function (url) {
-       //      me.$router.push({
-       //        path: url
-       //      });
-       //    }
+       }
      };
    }
  };

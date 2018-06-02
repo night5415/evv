@@ -16,6 +16,7 @@ import SignaturePad from "signature_pad";
 export default {
   mounted: function(params) {
     var employeeCanvas = document.querySelector(".employeeCanvas");
+    employeeCanvas.width = window.innerWidth;
 
     new SignaturePad(employeeCanvas, {
       backgroundColor: "rgba(255, 255, 255, 0)",
@@ -28,6 +29,7 @@ export default {
     });
 
     var parentCanvas = document.querySelector(".parentCanvas");
+    parentCanvas.width = window.innerWidth * 0.5;
 
     new SignaturePad(parentCanvas, {
       backgroundColor: "rgba(255, 255, 255, 0)",

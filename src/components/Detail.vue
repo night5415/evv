@@ -79,7 +79,7 @@ export default {
           ? "completedevent"
           : "scheduledevent",
       url = new URL(
-        `https://stage-lighthouse.pathfinderhi.net/~api/${endpoint}`
+        `https://test-lighthouse.pathfinderhi.net/~api/${endpoint}`
       ),
       securityToken = me.$helpers._getLocalStorage("securityContext"),
       params = {
@@ -97,12 +97,6 @@ export default {
       .then(data => data.text())
       .then(text => {
         var value = JSON.parse(text);
-        // setInterval(function() {
-        //     me.counter = me.counter + 1;
-        //     if (me.counter === 15) {
-        //     me.data = value.data[0];
-        //    }
-        // }, 200);
         me.data = value.data[0];
       })
       .catch(function(err) {

@@ -8,7 +8,7 @@
     <div class="form-group">
       <label for="pwd">Password:</label>
       <input type="password" class="form-control" id="pwd" v-model="password" placeholder="Enter Password" name="pswd">
-    </div> 
+    </div>  
     <button type="submit" class="btn btn-primary">Submit</button>
   </form> 
   </div>
@@ -26,32 +26,34 @@ export default {
     // Form handler
     onSubmit: function(evnt, form) {
       var me = this,
-        formData = new FormData(),
-        url = "https://stage-lighthouse.pathfinderhi.net/~api/login";
+        myUrl = "https://middleman20180526011226.azurewebsites.net/api/login",
+        params = {
+          username: this.username,
+          password: this.password
+        };
 
-      formData.append("source", "pathfinder");
-      formData.append("loginUserName", this.username);
-      formData.append("loginPassword", this.password);
-      formData.append("timeZone", "America/Chicago");
-      fetch(url, {
+      fetch(myUrl, {
         method: "POST",
-        body: formData
+        mode: "cors",
+        headers: {
+          "user-agent": "Mozilla/4.0 MDN Example",
+          "content-type": "application/json"
+        },
+        body: JSON.stringify(params)
       })
         .then(function(response) {
-          return response.text();
+          return response.json();
         })
-        .then(function(response) {
-          //bad JSON
-          var obj = eval(`(${response})`);
+        .then(function(obj) {
           if (obj.success) {
-            me.$helpers._addLocalStorage("securityContext", obj); 
+            me.$helpers._addLocalStorage("securityContext", obj);
             me.$router.push({ path: `/schedule` });
-          } else { 
-              me.$helpers._sendNotification(obj.errors.reason); 
+          } else {
+            me.$helpers._sendNotification(obj.message);
           }
         })
-        .catch(function(err) { 
-           me.$helpers._sendNotification(err); 
+        .catch(function(err) {
+          me.$helpers._sendNotification(err);
         });
     }
   }
@@ -82,6 +84,9 @@ export default {
     position: relative;
     top: 10vh;
     box-shadow: 0px 0px 0px #fff;
+  }
+  button {
+    width: 100%;
   }
 }
 </style>

@@ -5,9 +5,8 @@
       <thead>
         <tr>
           <th style="text-align:center">Actions</th> 
-          <th>Event Type</th>
-          <th>Start Time</th>
-          <th>End Time</th>
+          <th>Type</th>
+          <th>Time</th> 
           <th>Cancel</th>
         </tr>
       </thead>
@@ -17,9 +16,8 @@
                 <i title="Lock Appointment" class="far fa-2x fas fa-lock" v-on:click="showSignature"></i> 
                 <i title="Start Appointment" class="fas fa-2x fa-stopwatch" v-on:click="startAppointment"></i>
               </td> 
-              <td class="row-click" v-on:click="showDetails(a)">{{a.EventType}}</td> 
-              <td class="row-click" v-on:click="showDetails(a)">{{a.EventStartDate | timeFormat }}</td>
-              <td class="row-click" v-on:click="showDetails(a)">{{a.EventEndDate | timeFormat}}</td>
+              <td class="row-click" v-on:click="showDetails(a)">{{a.EventType}}</td>  
+              <td class="row-click" v-on:click="showDetails(a)">{{a.EventStartDate | timeFormat }} - {{a.EventEndDate | timeFormat}}</td>
               <td><i title="Cancel Appointment" class="far fa-2x fa-times-circle"></i></td>
           </tr> 
       </tbody>  
@@ -39,9 +37,9 @@ export default {
   mounted: function() {
     let me = this,
       d = me.$moment(),
-      url = new URL(
-        "https://stage-lighthouse.pathfinderhi.net/Pathfinder/~api/calendar/list" //~api/calendar/employeeEvents"
-      ),
+      url =
+        "https://middleman20180526011226.azurewebsites.net/api/schedule/current",
+      //url = "http://localhost:60745/api/schedule/current",
       securityToken = me.$helpers._getLocalStorage("securityContext"),
       params = {
         empIds: securityToken.data.SecurityContext.Person.Id,
@@ -60,12 +58,18 @@ export default {
       .map(k => esc(k) + "=" + esc(params[k]))
       .join("&");
     //make call to scheduling endpoint
-    fetch(`${url}?${query}`)
-      .then(data => data.text())
-      .then(text => {
-        var value = JSON.parse(text);
-        value.data.forEach(v => me.appointments.push(v));
-        me.$helpers._addLocalStorage("schedule", value.data);
+    fetch(`${url}?${query}`, {
+      method: "GET",
+      mode: "cors",
+      headers: {
+        "user-agent": "Mozilla/4.0 MDN Example",
+        "content-type": "application/json"
+      }
+    })
+      .then(data => data.json())
+      .then(obj => {
+        obj.data.forEach(v => me.appointments.push(v));
+        me.$helpers._addLocalStorage("schedule", obj.data);
       })
       .catch(function(err) {
         me.$helpers._sendNotification(err);

@@ -26,10 +26,10 @@ new Vue({
 });
 
 window.addEventListener('online', function () {
-  var element = document.getElementById('my-div');
-  element.classList.add("offline");
+  var element = document.getElementById('no-wifi');
+  element.classList.add("hide");
 });
 window.addEventListener('offline', function () {
-  var element = document.getElementById('my-div');
-  element.classList.remove("offline");
+  var element = document.getElementById('no-wifi');
+  element.classList.remove("hide");
 });

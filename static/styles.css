@@ -1,0 +1,25 @@
+.notifi-badge {
+  position: fixed;
+  padding: 10px;
+  border-radius: 6px;
+  background-color: rgb(237, 100, 152);
+  transition: all 200ms;
+  bottom: 20px;
+  right: 20px;
+  color: #fff;
+  opacity: 1;
+  z-index: 5;
+}
+
+.hide {
+  opacity: 0;
+  transition: all 200ms;
+}
+
+.no-wifi {
+  position: fixed;
+  top: 1em;
+  right: 1em;
+  color: red;
+  z-index: 2;
+}
