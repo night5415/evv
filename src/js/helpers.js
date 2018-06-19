@@ -42,11 +42,32 @@
 
        _removeLoadingImg: function () {
          var element = document.getElementById('imgLoading');
-         element.classList.add("hide");
-         //remove from DOM
-         setTimeout(function () {
-           document.body.removeChild(element);
-         }, 500);
+         if (element) {
+           element.classList.add("hide");
+           //remove from DOM
+           setTimeout(function () {
+             document.body.removeChild(element);
+           }, 500);
+         }
+       },
+
+       _callProxyUsingParams: function (url, params) {
+         let esc = encodeURIComponent,
+           local = "http://localhost:60745",
+           prod = "https://middleman20180526011226.azurewebsites.net",
+           query = Object.keys(params)
+           .map(k => esc(k) + "=" + esc(params[k]))
+           .join("&");
+
+         //make call to scheduling endpoint
+         return fetch(`${prod}${url}?${query}`, {
+           method: "GET",
+           mode: "cors",
+           headers: {
+             "user-agent": "Mozilla/4.0 MDN Example",
+             "content-type": "application/json"
+           }
+         })
        }
      };
    }

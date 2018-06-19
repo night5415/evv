@@ -74,26 +74,20 @@ export default {
   },
   mounted: function() {
     let me = this,
-      endpoint =
+      status =
         me.$route.query.status === "EventCompleted"
           ? "completedevent"
           : "scheduledevent",
-      url = new URL(
-        `https://test-lighthouse.pathfinderhi.net/~api/${endpoint}`
-      ),
+      endPoint = `/api/schedule/${status}`,
       securityToken = me.$helpers._getLocalStorage("securityContext"),
       params = {
+        EventId: me.$route.query.id,
         _dc: me.$moment().valueOf(),
         securityToken: securityToken.data.securityToken
       };
 
-    //copy paste from stack overflow :)
-    let esc = encodeURIComponent;
-    let query = Object.keys(params)
-      .map(k => esc(k) + "=" + esc(params[k]))
-      .join("&");
-    //make call to scheduling endpoint
-    fetch(`${url}/${me.$route.query.id}?${query}`)
+    me.$helpers
+      ._callProxyUsingParams(endPoint, params)
       .then(data => data.text())
       .then(text => {
         var value = JSON.parse(text);

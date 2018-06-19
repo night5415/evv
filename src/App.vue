@@ -13,13 +13,13 @@
  <script>
 export default {
   mounted: function() {
-    if ("serviceWorker" in navigator) {
-      try {
-        navigator.serviceWorker.register("sw.js");
-      } catch (e) {
-        console.log(e);
-      }
-    }
+    // if ("serviceWorker" in navigator) {
+    //   try {
+    //     navigator.serviceWorker.register("./static/sw.js");
+    //   } catch (e) {
+    //     console.log(e);
+    //   }
+    // }
   },
   updated: function() {},
   created: function() {},
@@ -51,7 +51,7 @@ body {
   height: 40vh;
   width: 100vw;
   box-shadow: 0px 0px 25px #8887bb;
-  background-color: deepskyblue;
+  background-color: #005662;
   position: absolute;
   top: 0;
   left: 0;

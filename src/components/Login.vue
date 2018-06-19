@@ -3,11 +3,11 @@
     <form v-on:submit.prevent="onSubmit">
     <div class="form-group">
       <label for="email">Username:</label>
-      <input type="text" class="form-control" id="email" v-model="username" placeholder="Enter Username" name="email">
+      <input type="text" class="form-control" id="email" v-model="username" placeholder="Enter Username" name="email" autocorrect="off" autocapitalize="none">
     </div>
     <div class="form-group">
       <label for="pwd">Password:</label>
-      <input type="password" class="form-control" id="pwd" v-model="password" placeholder="Enter Password" name="pswd">
+      <input type="password" class="form-control" id="pwd" v-model="password" placeholder="Enter Password" name="pswd" autocorrect="off" autocapitalize="none">
     </div>  
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>  

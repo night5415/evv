@@ -1,6 +1,10 @@
 <template> 
   <div class="container grid-body">  
-    <h2 class="header">{{msg}}</h2>  
+    <div class="header">
+      <div class="left"><i id="btnDayBack" class="far fa-arrow-alt-circle-left" v-on:click="dayBackward"></i></div>
+      <div class="center">{{title}}</div>
+      <div class="right"><i id="btnDayForward" class="far fa-arrow-alt-circle-right" v-on:click="dayForward"></i></div>
+    </div> 
     <table class="table table-hover">
       <thead>
         <tr>
@@ -13,8 +17,8 @@
       <tbody>
           <tr v-for="a in appointments">
               <td style="min-width:105px; text-align:center;">
-                <i title="Lock Appointment" class="far fa-2x fas fa-lock" v-on:click="showSignature"></i> 
-                <i title="Start Appointment" class="fas fa-2x fa-stopwatch" v-on:click="startAppointment"></i>
+                <i title="Lock Appointment" class="far fa-2x fas fa-lock" v-on:click="showSignature(a)"></i> 
+                <i title="Start Appointment" class="fas fa-2x fa-stopwatch" v-on:click="startAppointment(a)"></i>
               </td> 
               <td class="row-click" v-on:click="showDetails(a)">{{a.EventType}}</td>  
               <td class="row-click" v-on:click="showDetails(a)">{{a.EventStartDate | timeFormat }} - {{a.EventEndDate | timeFormat}}</td>
@@ -30,62 +34,70 @@ export default {
   data() {
     return {
       show: false,
-      msg: null,
-      appointments: []
+      title: null,
+      appointments: [],
+      date: null
     };
   },
   mounted: function() {
     let me = this,
-      d = me.$moment(),
-      url =
-        "https://middleman20180526011226.azurewebsites.net/api/schedule/current",
-      //url = "http://localhost:60745/api/schedule/current",
-      securityToken = me.$helpers._getLocalStorage("securityContext"),
-      params = {
-        empIds: securityToken.data.SecurityContext.Person.Id,
-        _dc: me.$moment().valueOf(),
-        startDate: d.startOf("day").format(),
-        endDate: d.endOf("day").format(),
-        securityToken: securityToken.data.securityToken
-      };
+      date = me.$moment();
 
-    //set header text
-    this.msg = d.format("MMMM Do YYYY");
-
-    //copy paste from stack overflow :)
-    let esc = encodeURIComponent;
-    let query = Object.keys(params)
-      .map(k => esc(k) + "=" + esc(params[k]))
-      .join("&");
-    //make call to scheduling endpoint
-    fetch(`${url}?${query}`, {
-      method: "GET",
-      mode: "cors",
-      headers: {
-        "user-agent": "Mozilla/4.0 MDN Example",
-        "content-type": "application/json"
-      }
-    })
-      .then(data => data.json())
-      .then(obj => {
-        obj.data.forEach(v => me.appointments.push(v));
-        me.$helpers._addLocalStorage("schedule", obj.data);
-      })
-      .then(function() {
-        me.$helpers._removeLoadingImg();
-      })
-      .catch(function(err) {
-        me.$helpers._sendNotification(err);
-      });
+    this.date = date;
+    me.getSchedule();
   },
   methods: {
-    showSignature() {
-      this.$router.push({ path: `/Lock` });
-    },
-    startAppointment() {
-      var me = this,
-        d = me.$moment();
+    getSchedule() {
+      let me = this,
+        endPoint = `/api/schedule/current`,
+        securityToken = me.$helpers._getLocalStorage("securityContext"),
+        params = {
+          empIds: securityToken.data.SecurityContext.Person.Id,
+          startDate: me.date.startOf("day").format(),
+          endDate: me.date.endOf("day").format(),
+          _dc: me.$moment().valueOf(),
+          securityToken: securityToken.data.securityToken
+        };
+      //set header text
+      me.title = me.date.format("MMMM Do");
+      //lets clear the current array
+      me.appointments.splice(0, me.appointments.length);
 
+      me.$helpers
+        ._callProxyUsingParams(endPoint, params)
+        .then(data => data.json())
+        .then(obj => {
+          if (obj.data.length > 0) {
+            obj.data.forEach(v => me.appointments.push(v));
+          } else {
+            me.$helpers._sendNotification(`No Appointments for ${this.title}`);
+          }
+        })
+        .then(function() {
+          me.$helpers._removeLoadingImg();
+        })
+        .catch(function(err) {
+          me.$helpers._sendNotification(err);
+        });
+    },
+    showSignature(appt) {
+      this.$router.push({ path: `/Lock`, query: { id: appt.MasterEventId } });
+    },
+    startAppointment(appt) {
+      var me = this,
+        d = me.$moment(),
+        appointment = {
+          id: appt.MasterEventId,
+          startTime: d.format("h:mm:ss a"),
+          lockTime: null,
+          lat: null,
+          long: null,
+          parent: null,
+          emp: null
+        };
+      //add our started appt. to localstorage
+      localStorage.setItem(appt.MasterEventId, JSON.stringify(appointment));
+      //pop a notification
       me.$helpers._sendNotification(
         `Starting Appointment at ${d.format("h:mm:ss a")}`
       );
@@ -96,8 +108,19 @@ export default {
         path: `/Detail`,
         query: { id: appt.MasterEventId, status: appt.EventStatus }
       });
+    },
+    dayForward() {
+      let me = this;
+      me.date.add(1, "day");
+      me.getSchedule();
+    },
+    dayBackward() {
+      let me = this;
+      me.date.subtract(1, "day");
+      me.getSchedule();
     }
   },
+
   filters: {
     timeFormat: function(date) {
       if (date) {
@@ -123,8 +146,21 @@ i {
   color: rgb(97, 97, 97);
 }
 .header {
-  text-align: center;
-  padding: 2px;
+  display: grid;
+  grid-template-columns: 25% 50% 25%;
+}
+.left {
+  justify-self: left;
+  font-size: 2.2em;
+}
+.right {
+  justify-self: right;
+  font-size: 2.2em;
+}
+.center {
+  justify-self: center;
+  font-size: 2em;
+  font-weight: 600;
 }
 .grid-body {
   margin: 0 auto;
@@ -148,7 +184,9 @@ i {
 .fade-leave-to {
   opacity: 0;
 }
-.row-click {
+.row-click,
+.fa-arrow-alt-circle-left,
+.fa-arrow-alt-circle-right {
   cursor: pointer;
 }
 @media only screen and (max-width: 750px) {
