@@ -16,6 +16,12 @@
 <script>
 export default {
   name: "Login",
+  mounted: function(params) {
+    var me = this,
+      context = me.$helpers._getLocalStorage("securityContext");
+
+    if (context) me.$router.push({ path: `/schedule` });
+  },
   data() {
     return {
       username: null,

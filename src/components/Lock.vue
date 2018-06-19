@@ -81,7 +81,7 @@ export default {
     },
     showConfirm: function() {
       var me = this,
-        appt = JSON.parse(localStorage.getItem(me.eventId)),
+        appt = me.$helpers._getLocalStorage(me.eventId),
         parent = document.getElementById("parentCanvas"),
         employee = document.getElementById("employeeCanvas");
 
@@ -102,7 +102,7 @@ export default {
       var newStoreRef = db.push();
       newStoreRef.set(appt);
 
-      localStorage.setItem(me.eventId, JSON.stringify(appt));
+      me.$helpers._addLocalStorage(me.eventId, JSON.stringify(appt));
       // just a little pause
       setTimeout(() => {
         me.$router.push({
